@@ -5,7 +5,7 @@ on:
     branches: [ main, master, dev ]
   pull_request:
     branches: [ main, master ]
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,14 +23,19 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: 设置 Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          # 不安装默认的 tools 包，避免旧版兼容性问题
-
-      - name: 安装构建所需 SDK 组件
+      - name: 下载 Android Command Line Tools
         run: |
-          echo "y" | sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          mkdir -p $HOME/android-sdk
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdline-tools.zip
+          unzip -q /tmp/cmdline-tools.zip -d $HOME/android-sdk
+          mv $HOME/android-sdk/command-line-tools $HOME/android-sdk/cmdline-tools
+          rm /tmp/cmdline-tools.zip
+
+      - name: 安装 SDK 组件
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+          yes | sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: 赋予 Gradle 脚本执行权限
         run: chmod +x ./gradlew
