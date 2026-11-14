@@ -29,7 +29,6 @@ jobs:
           cd $HOME/android-sdk
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
           unzip -q tools.zip
-          # 解压后的目录名可能是 command-line-tools，检查并重命名
           if [ -d "command-line-tools" ] && [ ! -d "cmdline-tools" ]; then
             mv command-line-tools cmdline-tools
           fi
