@@ -36,6 +36,7 @@ jobs:
       - name: 安装 SDK 组件并编译
         run: |
           export ANDROID_HOME=$HOME/android-sdk
+          unset ANDROID_SDK_ROOT
           # 找到 sdkmanager 的实际位置
           SDKMANAGER=$(find $ANDROID_HOME -name "sdkmanager" -type f | head -1)
           echo "Found sdkmanager at: $SDKMANAGER"
