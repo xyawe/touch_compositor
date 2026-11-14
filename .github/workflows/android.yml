@@ -29,24 +29,19 @@ jobs:
           cd $HOME/android-sdk
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
           unzip -q tools.zip
-          ls -la
-          # 检查实际目录名并正确处理
-          if [ -d "command-line-tools" ]; then
-            mv command-line-tools cmdline-tools
-          fi
           rm tools.zip
-          # 验证 sdkmanager 存在
-          ls -la cmdline-tools/latest/bin/
+          # 检查实际目录结构
+          find . -name "sdkmanager" -type f
 
       - name: 安装 SDK 组件并编译
         run: |
           export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
-          echo "ANDROID_HOME=$ANDROID_HOME"
+          # 找到 sdkmanager 的实际位置
+          SDKMANAGER=$(find $ANDROID_HOME -name "sdkmanager" -type f | head -1)
+          echo "Found sdkmanager at: $SDKMANAGER"
+          export PATH=$PATH:$(dirname $SDKMANAGER)
           echo "PATH=$PATH"
-          which sdkmanager || echo "sdkmanager not found in PATH"
-          ls $ANDROID_HOME/cmdline-tools/latest/bin/
-          yes | sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          yes | $SDKMANAGER --sdk_root=$ANDROID_HOME "platforms;android-35" "build-tools;35.0.0"
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
