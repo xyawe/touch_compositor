@@ -23,14 +23,14 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: 安装 Android SDK 组件
+      - name: 设置 Android SDK
         uses: android-actions/setup-android@v3
         with:
-          cmdline-tools-version: 11076708  # version 16.0
+          # 不安装默认的 tools 包，避免旧版兼容性问题
 
-      - name: 安装构建所需 SDK
+      - name: 安装构建所需 SDK 组件
         run: |
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          echo "y" | sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: 赋予 Gradle 脚本执行权限
         run: chmod +x ./gradlew
