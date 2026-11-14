@@ -34,17 +34,13 @@ jobs:
           fi
           rm tools.zip
 
-      - name: 安装 SDK 组件
+      - name: 安装 SDK 组件并编译
         run: |
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
           yes | sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
-      - name: 赋予 Gradle 脚本执行权限
-        run: chmod +x ./gradlew
-
-      - name: 编译 Debug APK
-        run: ./gradlew assembleDebug
+          chmod +x ./gradlew
+          ./gradlew assembleDebug
 
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
